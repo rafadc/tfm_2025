@@ -34,8 +34,8 @@ class PromptGenerator:
             return variants
 
         except Exception as e:
-            print(f"Error generating variants: {e}")
-            return [question] * num_variants
+            print(f"Error generating variants for question: {e}")
+            raise RuntimeError(f"Failed to generate prompt variants: {e}") from e
 
     def process_test_file(self, input_file: Path, output_file: Path):
         print(f"Processing {input_file} -> {output_file}")

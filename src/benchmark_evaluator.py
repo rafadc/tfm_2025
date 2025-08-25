@@ -34,15 +34,18 @@ class BenchmarkEvaluator:
 
         except Exception as e:
             print(f"Error evaluating question: {e}")
-            return "A", False
+            raise RuntimeError(f"Failed to evaluate question with Ollama: {e}") from e
 
     def evaluate_with_prompt_variants(
         self, question_variants: list[str], choices: list[str], correct_answer: str
     ) -> tuple[list[float], int]:
         scores = []
         for variant in question_variants:
-            _, is_correct = self.evaluate_question(variant, choices, correct_answer)
-            scores.append(1.0 if is_correct else 0.0)
+            try:
+                _, is_correct = self.evaluate_question(variant, choices, correct_answer)
+                scores.append(1.0 if is_correct else 0.0)
+            except RuntimeError:
+                raise
 
         best_variant_idx = scores.index(max(scores))
         return scores, best_variant_idx
