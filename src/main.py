@@ -4,6 +4,7 @@ from benchmark_evaluator import BenchmarkEvaluator
 from config import Config
 from data_manager import DataManager
 from prompt_generator import PromptGenerator
+from visualizer import ResultsVisualizer
 
 
 def main():
@@ -43,14 +44,30 @@ def main():
             evaluator = BenchmarkEvaluator(llm_model, Config.OLLAMA_BASE_URL)
 
             print("\n4.1: Running baseline evaluation...")
-            baseline_results = evaluator.run_baseline_evaluation(test_file)
             baseline_output = Config.RESULTS_DIR / f"{llm_name}_baseline_results.json"
-            evaluator.save_results(baseline_results, baseline_output)
+
+            # Check if baseline results already exist (caching)
+            if baseline_output.exists():
+                print(f"Loading cached baseline results from {baseline_output}")
+                with open(baseline_output, "r") as f:
+                    baseline_results = json.load(f)
+                print(f"Cached baseline accuracy: {baseline_results['accuracy']:.2f}%")
+            else:
+                baseline_results = evaluator.run_baseline_evaluation(test_file)
+                evaluator.save_results(baseline_results, baseline_output)
 
             print("\n4.2: Running optimized evaluation with prompt variants...")
-            optimized_results = evaluator.run_optimized_evaluation(test_file, prompts_file)
             optimized_output = Config.RESULTS_DIR / f"{llm_name}_optimized_results.json"
-            evaluator.save_results(optimized_results, optimized_output)
+
+            # Check if optimized results already exist (caching)
+            if optimized_output.exists():
+                print(f"Loading cached optimized results from {optimized_output}")
+                with open(optimized_output, "r") as f:
+                    optimized_results = json.load(f)
+                print(f"Cached optimized accuracy: {optimized_results['accuracy']:.2f}%")
+            else:
+                optimized_results = evaluator.run_optimized_evaluation(test_file, prompts_file)
+                evaluator.save_results(optimized_results, optimized_output)
 
             improvement = optimized_results["accuracy"] - baseline_results["accuracy"]
 
@@ -98,6 +115,11 @@ def main():
     with open(summary_file, "w") as f:
         json.dump(results_summary, f, indent=2)
     print(f"\nExperiment summary saved to {summary_file}")
+
+    # Step 5: Generate visualizations and tables
+    if results_summary["llm_models"]:
+        visualizer = ResultsVisualizer(Config.RESULTS_DIR)
+        visualizer.generate_all_visualizations(results_summary)
 
 
 if __name__ == "__main__":
