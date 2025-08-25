@@ -67,7 +67,7 @@ def main():
             print(f"  Baseline accuracy:  {baseline_results['accuracy']:.2f}%")
             print(f"  Optimized accuracy: {optimized_results['accuracy']:.2f}%")
             print(f"  Improvement:        {improvement:+.2f}%")
-            
+
         except RuntimeError as e:
             print(f"\n{'='*60}")
             print(f"ERROR: Ollama call failed for model {llm_model}")
@@ -75,7 +75,8 @@ def main():
             print(f"{'='*60}")
             print("\nExperiment stopped due to Ollama failure.")
             print("Please check that Ollama is running and the model is available.")
-            print(f"You can test the connection with: curl {Config.OLLAMA_BASE_URL}/api/generate -d '{{\"model\":\"{llm_model}\",\"prompt\":\"test\"}}'")
+            print(f"Test with: curl {Config.OLLAMA_BASE_URL}/api/generate "
+                  f"-d '{{\"model\":\"{llm_model}\",\"prompt\":\"test\"}}'")
             return
 
     print("\n" + "=" * 60)
