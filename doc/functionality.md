@@ -16,6 +16,8 @@ Descargar los datos del benchmark.
 Si la carpeta ```data``` no existe descargar el fichero https://people.eecs.berkeley.edu/~hendrycks/data.tar y lo extraera. Deberia crear la carpeta ```data```. Si ya existe la carpeta no hay nada que hacer. 
 Estos son los datos del benchmark MMLU.
 
+Ejecutaremos el benchmark MMLU con la implementacion de HuggingFace con los datos descargados y las LLM a probar. Almacenaremos el resultado en fichero. Si el fichero de resultado existe previamente no lo regeneraremos para ahorrar tiempo.
+
 ## Paso 2: Generacion de alternativas de prompt
 
 Crearemos una carpeta para cada llm con el nombre data\_nombrellm. Por ejemplo data\_gpt-oss o data\llama3.2.
@@ -38,3 +40,15 @@ A patient suffers a broken neck with damage to the spinal cord at the level of t
 Extraeremos el primer campo que corresponde la pregunta y crearemos un fichero analogo que se llamara anatomy\_test\_prompts.csv en cada linea tendremos 10 prompts separados por comas que corresponden a esa linea en el test.
 
 Para generar el nuevo prompt preguntaremos a la misma LLM que estamos probando.
+
+## Paso 3: Evaluacion de los prompts usando promptgen
+
+Utilizando promptbench evaluaremos los prompts del fichero que hemos generado en el paso anterior y sustituiremos el prompt en el fichero del test por el mejor.
+
+## Paso 4: Ejecucion de MMLU con los nuevos prompts
+
+Ejecutaremos otra vez el benchmark MMLU pero esta vez utilizando los nuevos ficheros que hemos generado en el Paso 3
+
+## Paso 5: Graficar los resultados
+
+Haremos una grafica y una tabla comparando los resultados con los prompts originales y los prompt que resultan mejores usando promptbench
