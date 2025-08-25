@@ -3,7 +3,12 @@
 .ipynb_checkpoints
 combined_result.png
 
+.claude
+
 .env
 
 data
+data_*
 data.tar
+
+results
