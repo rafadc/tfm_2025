@@ -41,6 +41,8 @@ Extraeremos el primer campo que corresponde la pregunta y crearemos un fichero a
 
 Para generar el nuevo prompt preguntaremos a la misma LLM que estamos probando.
 
+No generaremos el fichero de nuevo si ya esta creado
+
 ## Paso 3: Evaluacion de los prompts usando promptgen
 
 Utilizando promptbench evaluaremos los prompts del fichero que hemos generado en el paso anterior y sustituiremos el prompt en el fichero del test por el mejor.
